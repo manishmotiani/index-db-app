@@ -13,6 +13,7 @@ export class IndexDbService {
     tasks: 'tasks'
   };
 
+  stores: any = {};
   dbVersion = 1;
   constructor() {
 
@@ -32,7 +33,7 @@ export class IndexDbService {
                 db.createObjectStore(this.collections.contacts, { autoIncrement: true });
             };
             const upgradeDB3fromV1toV2 = () => {
-                db.createObjectStore(this.collections.tasks);
+                db.createObjectStore(this.collections.tasks, { keyPath: 'id' });
             };
             const upgradeDB3fromV2toV3 = async () => {
  
@@ -49,40 +50,79 @@ export class IndexDbService {
 
         },
       });
-      db.close();
+
+      this.stores[this.dbName] = db; // await openDB(this.dbName, this.dbVersion);
   }
 
+  async getDbInstance() {
+
+    if (this.stores[this.dbName]) {
+      return this.stores[this.dbName];
+    }
+
+    this.stores[this.dbName] = await openDB(this.dbName, this.dbVersion);
+    return this.stores[this.dbName];
+
+  }
+
+  /************************************************************************************************
+   * Insert and Update
+   ************************************************************************************************/
   async insert(collectionName: string, key: any, value: any) {
 
-    const db = await openDB(this.dbName, 1);
+    const db = await this.getDbInstance();
     await db.add(collectionName, value, key);
-    db.close();
 
   }
+  async update(collectionName: string, key: any, value: any) {
+    const db = await this.getDbInstance();
+    await db.put(collectionName, value, key);
+  }
 
+  /************************************************************************************************
+   * Insert update without keys
+   ************************************************************************************************/
   async insertAutoKey(collectionName: string, value: any) {
-
-    const db = await openDB(this.dbName, 1);
+    const db = await this.getDbInstance();
     await db.add(collectionName, value);
-    db.close();
+  }
 
+  async updateAutoKey(collectionName: string, value: any) {
+    const db = await this.getDbInstance();
+    await db.put(collectionName, value);
   }
   
+  /************************************************************************************************
+   * Retrieve data
+   ************************************************************************************************/
   async get(collectionName: string, key: any) {
-    const db = await openDB(this.dbName, this.dbVersion);
-    // retrieve by key:
+    const db = await this.getDbInstance();
     const item = await db.get(collectionName, key);
     return item;
   }
 
   async getAll(collectionName: string) {
-    const db = await openDB(this.dbName, this.dbVersion);
-    // retrieve by key:
+    const db = await this.getDbInstance();
     const list = await db.getAll(collectionName);
     return list;
   }
 
+  async count(collectionName: string) {
 
+    const db = await this.getDbInstance();
+    const list = await db.count(collectionName);
+    return list;
+  }
+
+  /************************************************************************************************
+   * Remove data
+   ************************************************************************************************/
+  async delete(collectionName: string, value: any) {
+
+    const db = await this.getDbInstance();
+    const list = await db.delete(collectionName, value);
+    return list;
+  }
   demo1() {
     openDB('db1', 1, {
       upgrade(db) {

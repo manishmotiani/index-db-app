@@ -1,14 +1,19 @@
 <div class="container">
     <div class="row">
-        <form [formGroup]="contactForm" class="row g-3 col-md-10" (ngSubmit)="onSubmit()">
+        <h4>List</h4>
+    </div>
+
+    <hr>
+    <div class="row">
+        <form [formGroup]="contactForm" class="row g-3 col-md-12" (ngSubmit)="onSubmit()">
 
             <div class="mb-3 row">
 
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <input type="text" id="name" class="form-control" formControlName="name" required>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-4">
                     <div *ngIf="name?.invalid && (name?.dirty || name?.touched)">
                         <div *ngIf="name?.errors?.['required']" class="alert alert-danger">
                             Name is required.
@@ -24,10 +29,10 @@
 
                 <label for="address" class="col-sm-2 col-form-label">Address</label>
 
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <input type="text" id="address" class="form-control" formControlName="address" required>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-4">
                     <div *ngIf="address?.invalid && (address?.dirty || address?.touched)">
                         <div *ngIf="address?.errors?.['required']" class="alert alert-danger">
                             Address is required.

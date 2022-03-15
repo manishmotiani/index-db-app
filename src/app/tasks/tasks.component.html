@@ -1,0 +1,74 @@
+<div class="container">
+    <div class="row">
+        <h4>Tasks</h4>
+    </div>
+
+    <hr>
+  <div class="row">
+      <form [formGroup]="taskForm" class="row g-3 col-md-10" (ngSubmit)="onSubmit()">
+
+          <div class="mb-3 row">
+
+              <label for="title" class="col-sm-3 col-form-label">Title</label>
+              <div class="col-sm-6">
+                  <input type="text" id="title" class="form-control" formControlName="title" required>
+              </div>
+              <div class="col-sm-3">
+                  <div *ngIf="title?.invalid && (title?.dirty || title?.touched)">
+                      <div *ngIf="title?.errors?.['required']" class="alert alert-danger">
+                          title is required.
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="mb-3 row">
+
+              <label for="description" class="col-sm-3 col-form-label">Description</label>
+
+              <div class="col-sm-6">
+                  <input type="text" id="description" class="form-control" formControlName="description" required>
+              </div>
+              <div class="col-sm-3">
+                  <div *ngIf="description?.invalid && (description?.dirty || description?.touched)">
+                      <div *ngIf="description?.errors?.['required']" class="alert alert-danger">
+                          Description is required.
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="mb-3 row">
+              <div class="col-sm-2"></div>
+              <div class="col-sm-10">
+                  <button type="submit" class="btn btn-primary" [disabled]="!taskForm.valid">Submit</button>
+              </div>
+          </div>
+      </form>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+      <div class="g-3 col-md-10">
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Description</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr scope="row" *ngFor='let item of list;let i=index;'>
+                      <th scope="row">{{i + 1}}</th>
+                      <td>{{item.title}}</td>
+                      <td>{{item.description}}</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+
+
+  </div>
+</div>
