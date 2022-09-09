@@ -46,11 +46,14 @@ export class ListComponent implements OnInit {
 
 
   resetDatabase() {
-    this.indexDbService.resetDB();
+    this.indexDbService.resetDB()
+      .then(x => {
+        this.refreshList();
+      });
   }
 
   clearData() {
-    this.indexDbService.clearData(this.collections.contacts);
+    this.indexDbService.clearCollection(this.collections.contacts);
   }
 
   get name() { return this.contactForm.get('name'); }

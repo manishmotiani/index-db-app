@@ -62,13 +62,24 @@ export class IndexDbService {
   }
 
   async resetDB() {
-    deleteDB(this.dbName);
-    // await this.init();
-    window.location.reload();
+    // to delete DB, close all existing connections
+    (await this.getDbInstance()).close();
+    await deleteDB(this.dbName);
+    await this.init();
   }
 
 
-  async clearData(collection: any) {
+  async clearAllCollection() {
+
+    const db = await this.getDbInstance();
+    const keys = Object.keys(this.collections);
+    for(const key of keys) {
+      await db.clear(key);
+    }
+  }
+
+  async clearCollection(collection: any) {
+    
     const db = await this.getDbInstance();
     await db.clear(collection);
     
