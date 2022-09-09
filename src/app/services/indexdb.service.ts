@@ -39,19 +39,39 @@ export class IndexDbService {
  
             };
 
-            if (oldVersion === 0) {
+            switch (oldVersion) {
+              // @ts-ignore
+              case 0:
                 upgradeDB3fromV0toV1();
+              // falls through
+              case 1:
                 upgradeDB3fromV1toV2();
-            }
-
-            if (oldVersion === 1) {
-                upgradeDB3fromV1toV2();
+                break;
+              default:
+                console.error('unknown db version');
             }
 
         },
       });
 
       this.stores[this.dbName] = db; // await openDB(this.dbName, this.dbVersion);
+
+      // await db.deleteObjectStore(this.collections.contacts);
+      // db.clear(this.collections.contacts);
+      
+  }
+
+  async resetDB() {
+    deleteDB(this.dbName);
+    // await this.init();
+    window.location.reload();
+  }
+
+
+  async clearData(collection: any) {
+    const db = await this.getDbInstance();
+    await db.clear(collection);
+    
   }
 
   async getDbInstance() {
